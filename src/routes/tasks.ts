@@ -12,17 +12,16 @@ const taskValidatorRules = [
           body('completed').isBoolean().withMessage('Completed must be a boolean'),
 ];
 
+
+
+//Create Task
 router.post('/', taskValidatorRules, (req: Request, res: Response) => {
           const errors = validationResult(req);
 
           if (!errors.isEmpty()) {
                     return res.status(400).json({ errors: errors.array() });
           }
-})
 
-
-//Create Task
-router.post('/', (req: Request, res: Response) => {
           const task: Task = {
                     id: tasks.length + 1,
                     title: req.body.title,
@@ -53,7 +52,13 @@ router.get('/:id', (req: Request, res: Response) => {
 
 
 //Update A Task
-router.put('/:id', (req: Request, res:Response) => {
+router.put('/:id', taskValidatorRules, (req: Request, res:Response) => {
+          const errors = validationResult(req);
+
+          if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+          }
+
           const task = tasks.find((t) => t.id === parseInt(req.params.id));
 
           if(!task) {
